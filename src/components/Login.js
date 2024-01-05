@@ -1,41 +1,74 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import Validate from "../utils/validate";
-import {auth} from "../utils/firebase";
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
+import { auth } from "../utils/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { useNavigate } from "react-router";
+import { addUser } from "../utils/userSlice";
+import { useDispatch } from "react-redux";
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMSG, setErrorMSG] = useState(null);
   const email = useRef(null);
   const password = useRef(null);
+  const name = useRef(null);
 
   const handleSubmit = () => {
     const message = Validate(email.current.value, password.current.value);
     console.log(message);
     setErrorMSG(message);
-    if(message) return;
-    if(!isSignIn){
-createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
-.then((userCred)=>{
-    const user = userCred.user
-    console.log(user)
-})
-.catch((error)=>{
-    const errorCode = error.code;
-    const errorMessage = error.message
-    setErrorMSG(errorCode + " " + errorMessage)
-})
-    }else{
-signInWithEmailAndPassword(auth,email.current.value, password.current.value )
-.then((userCred)=>{
-    const user = userCred.user
-    console.log(user)
-})
-.catch((error)=>{
-    const errorCode = error.code;
-    const errorMessage = error.message
-    setErrorMSG(errorCode + " " + errorMessage)
-})
+    if (message) return;
+    if (!isSignIn) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCred) => {
+          const user = userCred.user;
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL: "https://avatars.githubusercontent.com/u/42874701?v=4",
+          }).then((user)=>{
+            const { uid, email, displayName, photoURL } = auth.currentUser;
+            dispatch(
+              addUser({
+                uid: uid,
+                email: email,
+                displayName: displayName,
+                photoURL: photoURL,
+              })
+            );
+          })
+          console.log(user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMSG(errorCode + " " + errorMessage);
+        });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCred) => {
+          const user = userCred.user;
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMSG(errorCode + " " + errorMessage);
+        });
     }
   };
   const handleClick = () => {
@@ -60,6 +93,7 @@ signInWithEmailAndPassword(auth,email.current.value, password.current.value )
         </h1>
         {!isSignIn && (
           <input
+            ref={name}
             type="text"
             placeholder="Full Name"
             className="p-2 my-2 w-full bg-gray-700"
