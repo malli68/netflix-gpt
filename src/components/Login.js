@@ -1,17 +1,42 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import Validate from "../utils/validate";
-
+import {auth} from "../utils/firebase";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMSG, setErrorMSG] = useState(null);
   const email = useRef(null);
   const password = useRef(null);
 
   const handleSubmit = () => {
     const message = Validate(email.current.value, password.current.value);
     console.log(message);
-    setErrorMessage(message);
+    setErrorMSG(message);
+    if(message) return;
+    if(!isSignIn){
+createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+.then((userCred)=>{
+    const user = userCred.user
+    console.log(user)
+})
+.catch((error)=>{
+    const errorCode = error.code;
+    const errorMessage = error.message
+    setErrorMSG(errorCode + " " + errorMessage)
+})
+    }else{
+signInWithEmailAndPassword(auth,email.current.value, password.current.value )
+.then((userCred)=>{
+    const user = userCred.user
+    console.log(user)
+})
+.catch((error)=>{
+    const errorCode = error.code;
+    const errorMessage = error.message
+    setErrorMSG(errorCode + " " + errorMessage)
+})
+    }
   };
   const handleClick = () => {
     setIsSignIn(!isSignIn);
@@ -52,7 +77,7 @@ const Login = () => {
           placeholder="password"
           className="p-2 my-2 w-full  bg-gray-700"
         />
-        <p className="text-red-500 font-bold text-lg py-2">{errorMessage}</p>
+        <p className="text-red-500 font-bold text-lg py-2">{errorMSG}</p>
         <button className="p-4 my-4 w-full bg-red-800" onClick={handleSubmit}>
           {isSignIn ? "Sign In" : "Sign Up"}
         </button>
