@@ -7,12 +7,11 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { useNavigate } from "react-router";
 import { addUser } from "../utils/userSlice";
 import { useDispatch } from "react-redux";
+import { AVATAR, BANNER } from "../utils/constants";
 const Login = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMSG, setErrorMSG] = useState(null);
   const email = useRef(null);
@@ -21,7 +20,6 @@ const Login = () => {
 
   const handleSubmit = () => {
     const message = Validate(email.current.value, password.current.value);
-    console.log(message);
     setErrorMSG(message);
     if (message) return;
     if (!isSignIn) {
@@ -34,7 +32,7 @@ const Login = () => {
           const user = userCred.user;
           updateProfile(user, {
             displayName: name.current.value,
-            photoURL: "https://avatars.githubusercontent.com/u/42874701?v=4",
+            photoURL: AVATAR,
           }).then((user)=>{
             const { uid, email, displayName, photoURL } = auth.currentUser;
             dispatch(
@@ -46,8 +44,6 @@ const Login = () => {
               })
             );
           })
-          console.log(user);
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -62,7 +58,6 @@ const Login = () => {
       )
         .then((userCred) => {
           const user = userCred.user;
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -79,7 +74,7 @@ const Login = () => {
       <Header />
       <div className="absolute">
         <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/c38a2d52-138e-48a3-ab68-36787ece46b3/eeb03fc9-99c6-438e-824d-32917ce55783/IN-en-20240101-popsignuptwoweeks-perspective_alpha_website_large.jpg"
+          src={BANNER}
           alt="netflix"
         />
       </div>
