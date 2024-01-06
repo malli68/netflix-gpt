@@ -8,11 +8,13 @@ import MainContainer from "./MainContainer";
 import SecondaryContainer from "./SecondaryContainer";
 import usePopularMovies from "../hooks/usePopularMovies";
 import useUpComingMovies from "../hooks/useUpcomin";
+import useTopRatedMovies from "../hooks/useTopRated";
 
 const Browse = () => {
   useNowPlaying();
   usePopularMovies();
   useUpComingMovies();
+  useTopRatedMovies();
   return (
     <div>
       <Header />
