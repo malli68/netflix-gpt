@@ -6,6 +6,7 @@ export const BANNER =
 const apikey="8eb0e2749eb9e414e3048e22f949a53f";
 const accesToken="eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIwZTI3NDllYjllNDE0ZTMwNDhlMjJmOTQ5YTUzZiIsInN1YiI6IjY1OTgyZWI5ZDdhNzBhMTNkMDY5NmQyNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.7OSwIk6P1N33zxhriHZD5qYVDqHlNW1vYVhMNMahD1o";
 export const titleLogo = "https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.png";
+export const IMG_CDN_URL= "https://image.tmdb.org/t/p/w500"
 export const API_OPTIONS= {
     method: 'GET',
     headers: {
